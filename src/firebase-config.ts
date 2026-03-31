@@ -8,8 +8,16 @@ let config: object = {};
 try {
   config = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
 } catch (e) {
-  throw new Error(
-    'Must provide FIREBASE_CONFIG as a JSON object (with keys "projectId", "apiKey", etc) in .env',
+  console.warn(
+    'Warning: VITE_FIREBASE_CONFIG not found or invalid JSON. Using dummy config.',
   );
+  config = {
+    apiKey: 'dummy',
+    authDomain: 'dummy',
+    projectId: 'dummy',
+    storageBucket: 'dummy',
+    messagingSenderId: 'dummy',
+    appId: 'dummy',
+  };
 }
 export const FIREBASE_CONFIG = config;
