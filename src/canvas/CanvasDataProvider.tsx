@@ -17,6 +17,7 @@ import React, {
 } from "react";
 import { nodeFactories } from "./factories";
 import { RootNodeData } from "./nodes/RootNode";
+import { initialElements } from "./initial-elements";
 
 type SerializedCanvasData = {
   nodes: Record<
@@ -77,6 +78,15 @@ export function CanvasDataProvider({
 
   // Sync canvas from RTDB
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("mock")) {
+      const { nodes, edges } = initialElements();
+      setNodesRaw(nodes);
+      setEdgesRaw(edges);
+      setDataLoading(false);
+      return;
+    }
+
     let unsub = onValue(dataRef, (ss) => {
       let { nodes, edges }: SerializedCanvasData = ss.val() || {
         nodes: [],
