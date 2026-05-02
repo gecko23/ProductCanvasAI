@@ -6,10 +6,12 @@
 
 let config: object = {};
 try {
-  config = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
+  if (import.meta.env.VITE_FIREBASE_CONFIG) {
+    config = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
+  }
 } catch (e) {
-  throw new Error(
-    'Must provide FIREBASE_CONFIG as a JSON object (with keys "projectId", "apiKey", etc) in .env',
+  console.warn(
+    'Failed to parse VITE_FIREBASE_CONFIG from environment',
   );
 }
 export const FIREBASE_CONFIG = config;
