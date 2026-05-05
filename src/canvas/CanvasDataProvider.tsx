@@ -77,6 +77,19 @@ export function CanvasDataProvider({
 
   // Sync canvas from RTDB
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("mock")) {
+      setNodesRaw([
+        {
+          id: "root",
+          type: "root",
+          position: { x: 0, y: 0 },
+          data: { label: "Root Node" },
+        },
+      ]);
+      setEdgesRaw([]);
+      setDataLoading(false);
+      return;
+    }
     let unsub = onValue(dataRef, (ss) => {
       let { nodes, edges }: SerializedCanvasData = ss.val() || {
         nodes: [],

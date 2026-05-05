@@ -62,13 +62,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     let unsub = onAuthStateChanged(auth, async (user) => {
-      let idTokenResult = await user?.getIdTokenResult();
-      setAuthLoaded(true);
-      setHasAccess(String(idTokenResult?.claims.hasAccess || "") || null);
       let mockId = new URLSearchParams(window.location.search).get("mock");
-      if (!user) {
-        setUser(null);
-      } else if (mockId) {
+
+      if (mockId) {
+        setAuthLoaded(true);
+        setHasAccess("true");
         let { name, img } =
           MOCK_INFO[(Number(mockId) - 1) % MOCK_INFO.length] || MOCK_INFO[0];
         let slug = name.toLowerCase();
@@ -81,7 +79,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
           phoneNumber: null,
         });
       } else {
-        setUser(user);
+        let idTokenResult = await user?.getIdTokenResult();
+        setAuthLoaded(true);
+        setHasAccess(String(idTokenResult?.claims.hasAccess || "") || null);
+        setUser(user || null);
       }
     });
     return () => unsub();
