@@ -39,7 +39,7 @@ export function RouterGate() {
 
   useEffect(() => {
     if (user && !docId) {
-      window.location.pathname = generateId();
+      window.location.href = `/${generateId()}${window.location.search}`;
     }
   }, [user, docId]);
 

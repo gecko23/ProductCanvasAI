@@ -77,6 +77,12 @@ export function CanvasDataProvider({
 
   // Sync canvas from RTDB
   useEffect(() => {
+    let isMock = new URLSearchParams(window.location.search).get("mock");
+    if (isMock) {
+      setDataLoading(false);
+      return;
+    }
+
     let unsub = onValue(dataRef, (ss) => {
       let { nodes, edges }: SerializedCanvasData = ss.val() || {
         nodes: [],
@@ -129,6 +135,10 @@ export function CanvasDataProvider({
     (updates: SetStateAction<Node[]>) => {
       setNodesRaw((nodes) => {
         let newNodes = typeof updates === "function" ? updates(nodes) : updates;
+
+        let isMock = new URLSearchParams(window.location.search).get("mock");
+        if (isMock) return newNodes;
+
         // sync to DB
         let valToSet = Object.fromEntries(
           newNodes.map((n) => [
@@ -159,6 +169,10 @@ export function CanvasDataProvider({
     (updates: React.SetStateAction<Edge[]>) => {
       setEdgesRaw((edges) => {
         let newEdges = typeof updates === "function" ? updates(edges) : updates;
+
+        let isMock = new URLSearchParams(window.location.search).get("mock");
+        if (isMock) return newEdges;
+
         // sync to DB
         set(
           child(dataRef, "edges"),
