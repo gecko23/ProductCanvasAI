@@ -72,6 +72,9 @@ export function DocumentProvider({
         ...metadata,
         ...updates,
       };
+      let isMock = new URLSearchParams(window.location.search).get("mock");
+      if (isMock) return merged;
+
       update(child(docRef, "metadata"), stripUndefined(updates));
       if (userRef.current?.uid && merged.creatorUid === userRef.current.uid) {
         update(
@@ -128,6 +131,11 @@ export function DocumentProvider({
 
   // Observe doc metadata and content from RTDB
   useEffect(() => {
+    let isMock = new URLSearchParams(window.location.search).get("mock");
+    if (isMock) {
+      setMetadata({ title: "Mock Document" });
+      return;
+    }
     let unsub = onValue(metadataRef, (ss) => {
       setMetadata(ss.val() || {});
     });
