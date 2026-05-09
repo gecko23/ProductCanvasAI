@@ -6,10 +6,23 @@
 
 let config: object = {};
 try {
+  if (!import.meta.env.VITE_FIREBASE_CONFIG) {
+    throw new Error("Missing VITE_FIREBASE_CONFIG");
+  }
   config = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
 } catch (e) {
-  throw new Error(
-    'Must provide FIREBASE_CONFIG as a JSON object (with keys "projectId", "apiKey", etc) in .env',
+  console.warn(
+    "VITE_FIREBASE_CONFIG is missing or invalid. Falling back to mock configuration."
   );
+  // Fallback to a mock config for local development/testing without env vars
+  config = {
+    apiKey: "mock-api-key",
+    authDomain: "mock-project.firebaseapp.com",
+    databaseURL: "https://mock-project-default-rtdb.firebaseio.com",
+    projectId: "mock-project",
+    storageBucket: "mock-project.appspot.com",
+    messagingSenderId: "1234567890",
+    appId: "1:1234567890:web:abcdef123456",
+  };
 }
 export const FIREBASE_CONFIG = config;
