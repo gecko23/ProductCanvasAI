@@ -39,7 +39,11 @@ export function RouterGate() {
 
   useEffect(() => {
     if (user && !docId) {
+      const params = window.location.search;
       window.location.pathname = generateId();
+      if (params) {
+        window.location.search = params;
+      }
     }
   }, [user, docId]);
 
