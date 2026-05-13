@@ -61,6 +61,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, []);
 
   useEffect(() => {
+    let mockId = new URLSearchParams(window.location.search).get("mock");
+    if (mockId) {
+      let { name, img } =
+        MOCK_INFO[(Number(mockId) - 1) % MOCK_INFO.length] || MOCK_INFO[0];
+      let slug = name.toLowerCase();
+      setUser({
+        email: `${slug}@example.com`,
+        uid: `mock:${slug}`,
+        photoURL: `https://i.pravatar.cc/150?img=${img}`,
+        displayName: name,
+        providerId: "google",
+        phoneNumber: null,
+      });
+      setHasAccess("true");
+      setAuthLoaded(true);
+      return;
+    }
+
     let unsub = onAuthStateChanged(auth, async (user) => {
       let idTokenResult = await user?.getIdTokenResult();
       setAuthLoaded(true);

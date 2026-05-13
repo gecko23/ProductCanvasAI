@@ -39,7 +39,8 @@ export function RouterGate() {
 
   useEffect(() => {
     if (user && !docId) {
-      window.location.pathname = generateId();
+      const params = window.location.search;
+      window.location.href = "/" + generateId() + params;
     }
   }, [user, docId]);
 

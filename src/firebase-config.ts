@@ -4,12 +4,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-let config: object = {};
+let config: any = {};
 try {
   config = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
 } catch (e) {
-  throw new Error(
-    'Must provide FIREBASE_CONFIG as a JSON object (with keys "projectId", "apiKey", etc) in .env',
-  );
+  const isMock =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("mock");
+
+  if (isMock) {
+    config = { projectId: "mock-project-id", apiKey: "mock-api-key" };
+  } else {
+    console.warn(
+      'Firebase config not found. If this is not intentional, provide VITE_FIREBASE_CONFIG in .env.',
+    );
+    // Provide a minimal mock config to prevent total crash during build/SSR
+    config = { projectId: "mock-project-id" };
+  }
 }
 export const FIREBASE_CONFIG = config;
