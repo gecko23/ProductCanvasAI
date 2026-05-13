@@ -128,6 +128,11 @@ export function DocumentProvider({
 
   // Observe doc metadata and content from RTDB
   useEffect(() => {
+    let mock = new URLSearchParams(window.location.search).get("mock");
+    if (mock) {
+      setMetadata({ title: "Mock Document" } as DocMetadata);
+      return;
+    }
     let unsub = onValue(metadataRef, (ss) => {
       setMetadata(ss.val() || {});
     });
